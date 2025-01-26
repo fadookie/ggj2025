@@ -24,7 +24,7 @@ public class BubbleController: MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other == playArea)
+        if (other == playArea && Application.isPlaying)
         {
             StartCoroutine(ResetToStartPosition());
         }
