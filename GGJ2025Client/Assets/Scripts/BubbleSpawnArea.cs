@@ -13,8 +13,8 @@ public class BubbleSpawnArea : MonoBehaviour {
 	private Vector2 _maxSpawnPos;
 
 	// Use this for initialization
-	private void Start () {
-        // Singleton setup;
+	private void Awake () {
+        // Singleton setup
         if (_instance != null) {
             Destroy(gameObject);
             return;
