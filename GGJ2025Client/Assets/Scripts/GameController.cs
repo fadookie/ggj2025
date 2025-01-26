@@ -3,18 +3,26 @@ using UnityEngine;
 
 public class GameController: MonoBehaviour
 {
-    private static GameController instance;
-    public static GameController Instance => instance;
+    private static GameController _instance;
+    public static GameController Instance => _instance;
+
+    [SerializeField] private Collider2D playArea;
+    public Collider2D PlayArea => playArea;
     
     void Awake()
     {
-        // Singleton setup;
-        if (instance != null) {
+        // Singleton setup
+        if (_instance != null) {
             Destroy(gameObject);
             return;
         }
         DontDestroyOnLoad(this);
-        instance = this;
+        _instance = this;
+    }
+
+    private void Start()
+    {
+        BubbleSpawnArea.Instance.SpawnBubbleImmediate();
     }
 
     private void Update()

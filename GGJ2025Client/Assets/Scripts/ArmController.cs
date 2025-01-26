@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,14 +12,50 @@ public class ArmController : MonoBehaviour
         LeftArm,
         RightArm
     }
+
+    public static ArmController LeftArmControllerInstance { get; private set;  }
+    public static ArmController RightArmControllerInstance { get; private set; }
+
+    void Awake()
+    {
+        // Singleton setup
+        switch (armType)
+        {
+            case ArmType.LeftArm:
+            {
+                if (LeftArmControllerInstance != null) {
+                    Destroy(gameObject);
+                    return;
+                }
+                LeftArmControllerInstance = this;
+                break;
+            }
+            case ArmType.RightArm:
+            {
+                if (RightArmControllerInstance != null) {
+                    Destroy(gameObject);
+                    return;
+                }
+                RightArmControllerInstance = this;
+                break;
+            }
+            default:
+                throw new ArgumentException();
+        }
+        DontDestroyOnLoad(this);
+    }
+    
     [SerializeField] private ArmType armType;
     
     [SerializeField] private HingeJoint2D armJoint;
     [SerializeField] private HingeJoint2D wristJoint;
     [SerializeField] private HingeJoint2D fingerAJoint;
     [SerializeField] private HingeJoint2D fingerBJoint;
-
+    
     private KeyMap.ArmKeys _armKeys;
+
+    public IEnumerable<Collider2D> HostileTargets =>
+        new[] { fingerAJoint, fingerBJoint }.Select(x => x.GetComponent<Collider2D>());
     
     // Start is called before the first frame update
     void Start()

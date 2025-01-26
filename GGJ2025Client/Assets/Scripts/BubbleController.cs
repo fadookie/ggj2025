@@ -8,22 +8,21 @@ using UnityEngine;
 public class BubbleController: MonoBehaviour
 {
     [SerializeField] private ParticleSystem burstParticle;
-    [SerializeField] private Collider2D playArea;
-    [SerializeField] private Collider2D[] leftArmHostileColliders;
-    [SerializeField] private Collider2D[] rightArmHostileColliders;
+    private Collider2D[] _leftArmHostileColliders;
+    private Collider2D[] _rightArmHostileColliders;
 
-    private bool isLeftArmHostileTouching = false;
-    private bool isRightArmHostileTouching = false;
+    private bool _isLeftArmHostileTouching = false;
+    private bool _isRightArmHostileTouching = false;
     
-    private Vector3 _startingPosition;
-    private Rigidbody2D _rigidbody2D;
+    // private Rigidbody2D _rigidbody2D;
     private MeshRenderer _meshRenderer;
 
-    private void Start()
+    private void Awake()
     {
-        _startingPosition = transform.position;
-        _rigidbody2D = GetComponent<Rigidbody2D>();
+        // _rigidbody2D = GetComponent<Rigidbody2D>();
         _meshRenderer = GetComponent<MeshRenderer>();
+        _leftArmHostileColliders = ArmController.LeftArmControllerInstance.HostileTargets.ToArray();
+        _rightArmHostileColliders = ArmController.RightArmControllerInstance.HostileTargets.ToArray();
     }
 
     private void Update()
@@ -39,17 +38,17 @@ public class BubbleController: MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         var impulse = ComputeTotalImpulse(collision);
-        Debug.Log($"{nameof(BubbleController)}#{nameof(OnCollisionEnter2D)} other:{collision.gameObject.name} impulse:{impulse}");
-        if (leftArmHostileColliders.Contains(collision.collider))
+        // Debug.Log($"{nameof(BubbleController)}#{nameof(OnCollisionEnter2D)} other:{collision.gameObject.name} impulse:{impulse}");
+        if (_leftArmHostileColliders.Contains(collision.collider))
         {
-            isLeftArmHostileTouching = true;
+            _isLeftArmHostileTouching = true;
         }
-        if (rightArmHostileColliders.Contains(collision.collider))
+        if (_rightArmHostileColliders.Contains(collision.collider))
         {
-            isRightArmHostileTouching = true;
+            _isRightArmHostileTouching = true;
         }
 
-        if (isLeftArmHostileTouching && isRightArmHostileTouching)
+        if (_isLeftArmHostileTouching && _isRightArmHostileTouching)
         {
             Debug.LogWarning("BOTH ARMS ARE TOUCHING!");
             StartCoroutine(BubblePop());
@@ -59,21 +58,22 @@ public class BubbleController: MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         Debug.Log($"{nameof(BubbleController)}#{nameof(OnCollisionExit2D)} other:{collision.gameObject.name}");
-        if (leftArmHostileColliders.Contains(collision.collider))
+        if (_leftArmHostileColliders.Contains(collision.collider))
         {
-            isLeftArmHostileTouching = false;
+            _isLeftArmHostileTouching = false;
         }
-        if (rightArmHostileColliders.Contains(collision.collider))
+        if (_rightArmHostileColliders.Contains(collision.collider))
         {
-            isRightArmHostileTouching = false;
+            _isRightArmHostileTouching = false;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other == playArea && Application.isPlaying)
+		// Debug.LogWarning($"OnTriggerExit2D other:{other.gameObject.name}");
+        if (other == GameController.Instance.PlayArea && Application.isPlaying)
         {
-            StartCoroutine(ResetToStartPositionCo());
+            StartCoroutine(DieCo());
         }
     }
 
@@ -82,22 +82,22 @@ public class BubbleController: MonoBehaviour
         _meshRenderer.enabled = false;
         burstParticle.Play();
         AudioManager.Instance.PlaySound(AudioManager.Sound.BubblePop);
-        yield return new WaitForSeconds(2f);
-        ResetToStartPosition();
-        _meshRenderer.enabled = true;
+        yield return new WaitUntil(() => !burstParticle.isPlaying);
+        Die();
     }
 
-    private IEnumerator ResetToStartPositionCo()
+    private IEnumerator DieCo()
     {
+		// Debug.LogWarning($"DieCo");
         yield return new WaitForSeconds(2f);
-        ResetToStartPosition();
+        Die();
     }
     
-    private void ResetToStartPosition()
+    private void Die()
     {
-        transform.position = _startingPosition;
-        _rigidbody2D.velocity = Vector2.zero;
-        _rigidbody2D.angularVelocity = 0f;
+		Debug.LogWarning($"Die");
+        BubbleSpawnArea.Instance.QueueBubbleSpawn();
+        Destroy(this.gameObject);
     }
 
     private static Vector2 ComputeTotalImpulse(Collision2D collision) {
