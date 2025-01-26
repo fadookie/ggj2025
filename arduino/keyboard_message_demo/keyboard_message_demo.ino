@@ -24,11 +24,11 @@
 
 const int buttonPin = 2;         // input pin for pushbutton
 int previousButtonState = HIGH;  // for checking the state of a pushButton
-int counter = 0;                 // button push counter
+const char leftArmButton = 'q';
 
 void setup() {
   // make the pushButton pin an input:
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
   // initialize control over the keyboard:
   Keyboard.begin();
 }
@@ -37,15 +37,14 @@ void loop() {
   // read the pushbutton:
   int buttonState = digitalRead(buttonPin);
   // if the button state has changed,
-  if ((buttonState != previousButtonState)
-      // and it's currently pressed:
-      && (buttonState == HIGH)) {
-    // increment the button counter
-    counter++;
-    // type out a message
-    Keyboard.print("You pressed the button ");
-    Keyboard.print(counter);
-    Keyboard.println(" times.");
+  if (buttonState != previousButtonState) {
+      if (buttonState == HIGH) {
+        // button was pressed
+        Keyboard.press(leftArmButton);
+      } else {
+        // button was released
+        Keyboard.release(leftArmButton);
+      }
   }
   // save the current button state for comparison next time:
   previousButtonState = buttonState;
