@@ -21,6 +21,7 @@
 */
 
 #include "Keyboard.h"
+//#define DEBUG_LOG
 
 const int BUTTON_PIN_START = 2; // First pin for buttons
 const int NUM_BUTTONS = 6;
@@ -39,12 +40,15 @@ void setup() {
     // make the pushButton pins an input with built-in resistor
     pinMode(getButtonPin(i), INPUT_PULLUP);
   }
-  buttonKeys[0] = '0';
-  buttonKeys[1] = '1';
-  buttonKeys[2] = '2';
-  buttonKeys[3] = '3';
-  buttonKeys[4] = '4';
-  buttonKeys[5] = '5';
+  buttonKeys[0] = 'q';
+  buttonKeys[1] = 'w';
+  buttonKeys[2] = 'e';
+  buttonKeys[3] = 'r';
+  buttonKeys[4] = 'o';
+  buttonKeys[5] = 'p';
+#ifdef DEBUG_LOG
+  Serial.begin(9600);
+#endif
 }
 
 void loop() {
@@ -53,12 +57,26 @@ void loop() {
     int buttonState = digitalRead(getButtonPin(i));
     // if the button state has changed,
     if (buttonState != previousButtonStates[i]) {
-        if (buttonState == HIGH) {
+        if (buttonState == LOW) {
           // button was pressed
           Keyboard.press(buttonKeys[i]);
+          #ifdef DEBUG_LOG
+          Serial.print("button press pin:");
+          Serial.print(getButtonPin(i));
+          Serial.print(" key:");
+          Serial.println(buttonKeys[i]);
+          #endif
         } else {
           // button was released
-          Keyboard.release(buttonKeys[i]);
+          int released = Keyboard.release(buttonKeys[i]);
+          #ifdef DEBUG_LOG
+          Serial.print("button release pin:");
+          Serial.print(getButtonPin(i));
+          Serial.print(" key:");
+          Serial.print(buttonKeys[i]);
+          Serial.print(" released:");
+          Serial.println(released);
+          #endif
         }
         // save the current button state for comparison next time:
         previousButtonStates[i] = buttonState;
