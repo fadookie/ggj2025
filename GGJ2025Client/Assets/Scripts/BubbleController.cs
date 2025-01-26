@@ -28,8 +28,9 @@ public class BubbleController: MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyMap.DebugPopKey))
         {
+            // TODO: Make sure this doesn't count for score if we allow the user to use this key
             Debug.LogWarning("DEBUG BubblePop");
             StartCoroutine(BubblePop());
         }
