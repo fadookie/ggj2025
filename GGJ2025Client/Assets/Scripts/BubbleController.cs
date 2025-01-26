@@ -26,6 +26,15 @@ public class BubbleController: MonoBehaviour
         _meshRenderer = GetComponent<MeshRenderer>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Debug.LogWarning("DEBUG BubblePop");
+            StartCoroutine(BubblePop());
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         var impulse = ComputeTotalImpulse(collision);
@@ -71,6 +80,7 @@ public class BubbleController: MonoBehaviour
     {
         _meshRenderer.enabled = false;
         burstParticle.Play();
+        AudioManager.Instance.PlaySound(AudioManager.Sound.BubblePop);
         yield return new WaitForSeconds(2f);
         ResetToStartPosition();
         _meshRenderer.enabled = true;
