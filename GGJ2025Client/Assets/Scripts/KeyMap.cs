@@ -6,6 +6,7 @@ public static class KeyMap
     public const KeyCode FullscreenKey = KeyCode.F;
     public const KeyCode BubbleSpawnKey = KeyCode.B;
     public const KeyCode DebugPopKey = KeyCode.X;
+    public const KeyCode ShowHeadKey = KeyCode.H; // TODO
 
     public record ArmKeys(KeyCode ArmKey, KeyCode WristKey, KeyCode FingerAKey, KeyCode FingerBKey, KeyCode DirectionToggleKey, KeyCode SpeedBoostKey);
 
