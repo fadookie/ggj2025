@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -29,9 +30,8 @@ public class BubbleController: MonoBehaviour
     {
         if (Input.GetKeyDown(KeyMap.DebugPopKey))
         {
-            // TODO: Make sure this doesn't count for score if we allow the user to use this key
             Debug.LogWarning("DEBUG BubblePop");
-            StartCoroutine(BubblePop());
+            StartCoroutine(BubblePop(scorePoint: false));
         }
     }
 
@@ -51,7 +51,7 @@ public class BubbleController: MonoBehaviour
         if (_isLeftArmHostileTouching && _isRightArmHostileTouching)
         {
             Debug.LogWarning("BOTH ARMS ARE TOUCHING!");
-            StartCoroutine(BubblePop());
+            StartCoroutine(BubblePop(scorePoint: true));
         }
     }
 
@@ -77,13 +77,17 @@ public class BubbleController: MonoBehaviour
         }
     }
 
-    private IEnumerator BubblePop()
+    private IEnumerator BubblePop(bool scorePoint)
     {
         _meshRenderer.enabled = false;
         burstParticle.Play();
         AudioManager.Instance.PlaySound(AudioManager.Sound.BubblePop);
         yield return new WaitUntil(() => !burstParticle.isPlaying);
         Die(respawn: true);
+        if (scorePoint)
+        {
+            GameController.Instance.ScorePoint();
+        }
     }
 
     private IEnumerator DieCo()

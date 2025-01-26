@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UniRx;
 
 public class GameController: MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GameController: MonoBehaviour
 
     [SerializeField] private Collider2D playArea;
     public Collider2D PlayArea => playArea;
+    
+    private readonly IntReactiveProperty _score = new(0);
+    public IReadOnlyReactiveProperty<int> Score => _score;
     
     void Awake()
     {
@@ -32,5 +36,10 @@ public class GameController: MonoBehaviour
             Debug.LogWarning($"GameControllerFullscreen toggle, current:{Screen.fullScreen}");
             Screen.fullScreen = !Screen.fullScreen; 
         }
+    }
+
+    public void ScorePoint()
+    {
+        _score.Value += 1;
     }
 }
