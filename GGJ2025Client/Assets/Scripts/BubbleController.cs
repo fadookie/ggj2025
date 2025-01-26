@@ -83,20 +83,23 @@ public class BubbleController: MonoBehaviour
         burstParticle.Play();
         AudioManager.Instance.PlaySound(AudioManager.Sound.BubblePop);
         yield return new WaitUntil(() => !burstParticle.isPlaying);
-        Die();
+        Die(respawn: true);
     }
 
     private IEnumerator DieCo()
     {
 		// Debug.LogWarning($"DieCo");
         yield return new WaitForSeconds(2f);
-        Die();
+        Die(respawn: true);
     }
-    
-    private void Die()
+
+    public void Die(bool respawn)
     {
-		Debug.LogWarning($"Die");
-        BubbleSpawnArea.Instance.QueueBubbleSpawn();
+		// Debug.Log($"BubbleController#Die");
+        if (respawn)
+        {
+            BubbleSpawnArea.Instance.QueueBubbleSpawn();
+        }
         Destroy(this.gameObject);
     }
 
