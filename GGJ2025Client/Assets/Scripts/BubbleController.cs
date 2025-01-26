@@ -79,15 +79,15 @@ public class BubbleController: MonoBehaviour
 
     private IEnumerator BubblePop(bool scorePoint)
     {
+        if (scorePoint)
+        {
+            GameController.Instance.ScorePoint();
+        }
         _meshRenderer.enabled = false;
         burstParticle.Play();
         AudioManager.Instance.PlaySound(AudioManager.Sound.BubblePop);
         yield return new WaitUntil(() => !burstParticle.isPlaying);
         Die(respawn: true);
-        if (scorePoint)
-        {
-            GameController.Instance.ScorePoint();
-        }
     }
 
     private IEnumerator DieCo()
