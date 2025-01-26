@@ -21,28 +21,28 @@ public class ArmController : MonoBehaviour
     private KeyCode ArmKey => armType switch
     {
         ArmType.LeftArm => KeyCode.Q,
-        ArmType.RightArm => KeyCode.U,
+        ArmType.RightArm => KeyCode.P,
         _ => throw new ArgumentException()
     };
     
     private KeyCode WristKey => armType switch
     {
         ArmType.LeftArm => KeyCode.W,
-        ArmType.RightArm => KeyCode.I,
+        ArmType.RightArm => KeyCode.O,
         _ => throw new ArgumentException()
     };
     
     private KeyCode FingerAKey => armType switch
     {
         ArmType.LeftArm => KeyCode.E,
-        ArmType.RightArm => KeyCode.O,
+        ArmType.RightArm => KeyCode.I,
         _ => throw new ArgumentException()
     };
     
     private KeyCode FingerBKey => armType switch
     {
         ArmType.LeftArm => KeyCode.R,
-        ArmType.RightArm => KeyCode.P,
+        ArmType.RightArm => KeyCode.U,
         _ => throw new ArgumentException()
     };
     
