@@ -1,6 +1,10 @@
 # PWOP
 This is our submission for the [Global Game Jam 2025 at UC Davis](https://globalgamejam.org/jam-sites/2025/uc-davis), a bubble popping game inspired by [QWOP](https://foddy.net/Athletics.html).
 
+## Links
+* [GGJ 2025 Submission Page](https://globalgamejam.org/games/2025/pwop-9)
+* [Itch.io Submission Page](https://rufusdufus0.itch.io/pwop) - Includes version that's playable in your browser!
+
 # Instructions
 Score points by popping bubbles by catching them between fingers on both hands.
 
